@@ -1,4 +1,6 @@
 
+Artifact Evaluation for the paper [Tascade: Hardware Support for Atomic-free, Asynchronous and Efficient Reduction Trees](https://arxiv.org/abs/2311.15810)
+
 # Plot Figures
 
 ## Figure 3 - Dalorex vs Tascade scaling
