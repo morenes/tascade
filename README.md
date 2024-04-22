@@ -41,9 +41,11 @@ Artifact Evaluation for the paper [Tascade: Hardware Support for Atomic-free, As
     python3 plots/characterization.py -p 27 -m 7
 
 ## Figure 9 - Heatmap
-    // Generate plots for configurations HEAT8 and HEAT64
-    python3 gui/gui.py
-    
+
+    python3 gui/gui.py -p Heatmap -n HEAT8M --nogui
+    python3 gui/gui.py -p Heatmap -n HEAT8M --nogui -m 'FMCore Active'
+    python3 gui/gui.py -p Heatmap -n HEAT64M --nogui
+    python3 gui/gui.py -p Heatmap -n HEAT64M --nogui -m 'FMCore Active'
 
 ## Figure 10 - Scaling plots
 
@@ -53,35 +55,57 @@ Artifact Evaluation for the paper [Tascade: Hardware Support for Atomic-free, As
 
 ## ANIMATION FIGURE 9
 
-### TASCADE
+<table>
+<tr>
+<td>
 
-![heatmap_tascade](https://github.com/prisca71/tascade/assets/151456861/ad3c8bfd-4a73-4176-a381-417d00ffbc57)
+### PU Activity (Dalorex)
 
+![Heatmap 1 Animation](plots/animated_heatmaps/HEAT64M_2_64_Kron22_PU_Active/heatmap_animation.gif)
 
+</td>
+<td>
 
+### PU Activity (Tascade)
 
-### DALOREX
+![Heatmap 2 Animation](plots/animated_heatmaps/HEAT8M_2_64_Kron22_PU_Active/heatmap_animation.gif)
 
-![heatmap_dalorex](https://github.com/prisca71/tascade/assets/151456861/9a77f5e9-d902-47a1-a01a-d589234dcaa1)
+</td>
+</tr>
+<tr>
+<td>
 
+### Router Activity (Dalorex)
+
+![Heatmap 3 Animation](plots/animated_heatmaps/HEAT64M_2_64_Kron22_Router_Active/heatmap_animation.gif)
+
+</td>
+<td>
+
+### Router Activity (Tascade)
+
+![Heatmap 4 Animation](plots/animated_heatmaps/HEAT8M_2_64_Kron22_Router_Active/heatmap_animation.gif)
+
+</td>
+</tr>
+</table>
 
 
 # Generate Runs
 
 
-## Figure 3 - Dalorex vs Tascade scaling
-
-    exp_tascade/run_exp_dlx_scale.sh 9 0 3
-
-
-## Figure 4 - Cascading
-
-    exp_tascade/run_exp_cascading.sh 9 0 2 128
-
-
 ## Figure 5 - Proxy Size
 
     exp_tascade/run_exp_proxy.sh 9 0 5 128
+
+
+## Figure 3 - Dalorex vs Tascade scaling (dependencies with Fig5)
+
+    exp_tascade/run_exp_dlx_scale.sh 9 0 3
+
+## Figure 4 - Cascading (dependencies with Fig5)
+
+    exp_tascade/run_exp_cascading.sh 9 0  128
 
 
 ## Figure 6 - Proxy Cache Pressure
@@ -100,7 +124,7 @@ Artifact Evaluation for the paper [Tascade: Hardware Support for Atomic-free, As
 
 ## Figure 9 - Heatmap
 
-    exp_tascade/run_exp_heatmap.sh 5 0 1 64 Kron22
+    exp_tascade/run_exp_heatmap.sh 2 0 1 64 Kron22
 
 
 ## Figure 10 - Scaling plots

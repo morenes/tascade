@@ -7,8 +7,8 @@ else
 fi
 
 if [ -z "$4" ]; then
-  echo "Default grid_w=64"
   let grid_w=64
+  echo "Default grid_w=$grid_w"
 else
   let grid_w=$4
   echo "grid_w=$grid_w"
@@ -24,7 +24,7 @@ fi
 declare -A options
 declare -A strings
 
-th=32
+th=2 # To avoid artifacts in the heatmap due to frame asynchrony
 verbose=2
 assert=0
 exp="HEAT"
@@ -39,24 +39,44 @@ let board_w=$grid_w #Specify board so that the package has the same size as the 
 
 
 
-local_run=0
+local_run=1
 
-sufix="-v $verbose -r $assert -t $th -u $noc_conf -m $grid_w -c $chiplet_w -k $board_w -l $ruche -o $torus -y $dcache -s $local_run"
+sufix="-v $verbose -r $assert -t $th -u $noc_conf -m $grid_w -c $chiplet_w -k $board_w -l $ruche -y $dcache -s $local_run"
 i=0
+### MESH
+# No Proxy
 let proxy_w=$grid_w
-strings[$i]="${exp}${proxy_w}"
-options[$i]="-n ${strings[$i]} -e $proxy_w  $sufix"
+strings[$i]="${exp}${proxy_w}M"
+options[$i]="-n ${strings[$i]} -e $proxy_w -o $torus $sufix"
 let i=$i+1
 
+# Proxy 8x8
 let proxy_w=8
-strings[$i]="${exp}${proxy_w}"
-options[$i]="-n ${strings[$i]} -e $proxy_w  $sufix"
+strings[$i]="${exp}${proxy_w}M"
+options[$i]="-n ${strings[$i]} -e $proxy_w -o $torus $sufix"
 let i=$i+1
 
+### TORUS
+torus=1
+# No Proxy
+let proxy_w=$grid_w
+strings[$i]="${exp}${proxy_w}T"
+options[$i]="-n ${strings[$i]} -e $proxy_w -o $torus $sufix"
+let i=$i+1
+
+# Proxy 8x8
+let proxy_w=8
+strings[$i]="${exp}${proxy_w}T"
+options[$i]="-n ${strings[$i]} -e $proxy_w -o $torus $sufix"
+let i=$i+1
+
+
+####
+# Sync & Merge 8x8
 let proxy_w=8
 let proxy_routing=3
 strings[$i]="${exp}${proxy_w}S"
-options[$i]="-n ${strings[$i]} -e $proxy_w -z $proxy_routing -j 0 -b 2 $sufix"
+options[$i]="-n ${strings[$i]} -e $proxy_w -o $torus -z $proxy_routing -j 0 -b 2 $sufix"
 let i=$i+1
 
 

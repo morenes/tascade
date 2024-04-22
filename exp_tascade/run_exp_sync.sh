@@ -31,7 +31,7 @@ declare -A strings
 th=32
 verbose=1
 assert=0
-iter="SYNCUP"
+iter="SYNC"
 
 i=0
 
@@ -65,7 +65,7 @@ strings[$i]="${iter}1"
 options[$i]="-n ${strings[$i]} -e $proxy_w -z $proxy_routing -j $write_thru -b $barrier $sufix"
 let i=$i+1
 
-#C2 means Selective
+#C2 means Selective. No need to run if we have PROXY16
 let proxy_routing=4
 strings[$i]="${iter}2"
 # Let write thru be based on app, and also barrier

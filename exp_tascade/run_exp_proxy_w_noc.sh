@@ -7,8 +7,8 @@ else
 fi
 
 if [ -z "$4" ]; then
-  echo "Default grid_w=64"
-  let grid_w=64
+  let grid_w=128
+  echo "Default grid_w=$grid_w"
 else
   let grid_w=$4
   echo "grid_w=$grid_w"
@@ -27,8 +27,10 @@ declare -A strings
 th=16
 verbose=1
 assert=0
+local_run=0
 exp="PX_NOC"
 
+# Monolithic SRAM
 let chiplet_w=$grid_w
 let board_w=$grid_w #Specify board so that the package has the same size as the board
 
@@ -38,37 +40,49 @@ let ruche=0
 #NOC TYPE
 let torus=0
 
-
-local_run=1
-
 sufix="-v $verbose -r $assert -t $th -u $noc_conf -m $grid_w -c $chiplet_w -k $board_w -l $ruche -o $torus -y $dcache -s $local_run"
 i=0
-# 0: Dalorex Mesh
+# 0: Monolithic Mesh
 let proxy_w=$grid_w
 strings[$i]="${exp}0"
 options[$i]="-n ${strings[$i]} -e $proxy_w  $sufix"
 let i=$i+1
 
-#1: Tascade
+#1: With Proxy
 let proxy_w=16
-strings[$i]="${exp}1"
+strings[$i]="${exp}11"
 options[$i]="-n ${strings[$i]} -e $proxy_w  $sufix"
 let i=$i+1
 
-######
+###### 
 let torus=1
 sufix="-v $verbose -r $assert -t $th -u $noc_conf -m $grid_w -c 32 -o $torus -y $dcache -s $local_run"
-#2: Dalorex distributed
+#2: Hierarchical Torus, chiplets 32x32
 let proxy_w=$grid_w
+strings[$i]="${exp}2"
+options[$i]="-n ${strings[$i]} -e $proxy_w  $sufix"
+let i=$i+1
+
+let proxy_w=16
+#3: With Proxy
 strings[$i]="${exp}3"
 options[$i]="-n ${strings[$i]} -e $proxy_w  $sufix"
 let i=$i+1
 
+####### Monolithic Torus
+sufix="-v $verbose -r $assert -t $th -u $noc_conf -m $grid_w -c $chiplet_w -k $board_w -l $ruche -o $torus -y $dcache -s $local_run"
+#4: Monolithic Torus
+let proxy_w=$grid_w
+strings[$i]="${exp}4"
+options[$i]="-n ${strings[$i]} -e $proxy_w  $sufix"
+let i=$i+1
+
+#5: With Proxy
 let proxy_w=16
-#3: Tascade distributed
 strings[$i]="${exp}5"
 options[$i]="-n ${strings[$i]} -e $proxy_w  $sufix"
 let i=$i+1
+
 
 ###############
 
